@@ -50,7 +50,6 @@ var GENERIC_DIR = BUILD_DIR + 'generic/';
 var COMPONENTS_DIR = BUILD_DIR + 'components/';
 var MINIFIED_DIR = BUILD_DIR + 'minified/';
 var FIREFOX_BUILD_DIR = BUILD_DIR + 'firefox/';
-var CHROME_BUILD_DIR = BUILD_DIR + 'chromium/';
 var JSDOC_BUILD_DIR = BUILD_DIR + 'jsdoc/';
 var GH_PAGES_DIR = BUILD_DIR + 'gh-pages/';
 var SRC_DIR = 'src/';
@@ -402,7 +401,7 @@ gulp.task('default', function() {
   });
 });
 
-gulp.task('extension', ['firefox', 'chromium']);
+gulp.task('extension', ['firefox']);
 
 gulp.task('buildnumber', function (done) {
   console.log();
@@ -874,52 +873,6 @@ gulp.task('mozcentral-pre', ['buildnumber', 'locale'], function () {
 
 gulp.task('mozcentral', ['mozcentral-pre']);
 
-gulp.task('chromium-pre', ['buildnumber', 'locale'], function () {
-  console.log();
-  console.log('### Building Chromium extension');
-  var defines = builder.merge(DEFINES, { CHROME: true, SKIP_BABEL: true, });
-
-  var CHROME_BUILD_DIR = BUILD_DIR + '/chromium/',
-      CHROME_BUILD_CONTENT_DIR = CHROME_BUILD_DIR + '/content/';
-
-  // Clear out everything in the chrome extension build directory
-  rimraf.sync(CHROME_BUILD_DIR);
-
-  var version = getVersionJSON().version;
-
-  return merge([
-    createBundle(defines).pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'build')),
-    createWebBundle(defines).pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web')),
-    gulp.src(COMMON_WEB_FILES, { base: 'web/', })
-        .pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web')),
-
-    gulp.src([
-      'web/locale/*/viewer.properties',
-      'web/locale/locale.properties'
-    ], { base: 'web/', }).pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web')),
-    gulp.src(['external/bcmaps/*.bcmap', 'external/bcmaps/LICENSE'],
-             { base: 'external/bcmaps', })
-        .pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web/cmaps')),
-
-    preprocessHTML('web/viewer.html', defines)
-        .pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web')),
-    preprocessCSS('web/viewer.css', 'chrome', defines, true)
-        .pipe(gulp.dest(CHROME_BUILD_CONTENT_DIR + 'web')),
-
-    gulp.src('LICENSE').pipe(gulp.dest(CHROME_BUILD_DIR)),
-    gulp.src('extensions/chromium/manifest.json')
-        .pipe(replace(/\bPDFJSSCRIPT_VERSION\b/g, version))
-        .pipe(gulp.dest(CHROME_BUILD_DIR)),
-    gulp.src([
-      'extensions/chromium/**/*.{html,js,css,png}',
-      'extensions/chromium/preferences_schema.json'
-    ], { base: 'extensions/chromium/', })
-        .pipe(gulp.dest(CHROME_BUILD_DIR)),
-  ]);
-});
-
-gulp.task('chromium', ['chromium-pre']);
-
 gulp.task('jsdoc', function (done) {
   console.log();
   console.log('### Generating documentation (JSDoc)');
@@ -1140,16 +1093,6 @@ gulp.task('lint', function (done) {
       return;
     }
 
-    console.log();
-    console.log('### Checking supplemental files');
-
-    if (!checkChromePreferencesFile(
-          'extensions/chromium/preferences_schema.json',
-          'web/default_preferences.json')) {
-      done(new Error('chromium/preferences_schema is not in sync.'));
-      return;
-    }
-
     console.log('files checked, no errors found');
     done();
   });
@@ -1209,8 +1152,6 @@ gulp.task('gh-pages-prepare', ['web-pre'], function () {
     gulp.src([FIREFOX_BUILD_DIR + '*.xpi',
               FIREFOX_BUILD_DIR + '*.rdf'])
         .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'firefox/')),
-    gulp.src(CHROME_BUILD_DIR + '*.crx')
-        .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'chromium/')),
     gulp.src('test/features/**/*', { base: 'test/', })
         .pipe(gulp.dest(GH_PAGES_DIR)),
     gulp.src(JSDOC_BUILD_DIR + '**/*', { base: JSDOC_BUILD_DIR, })

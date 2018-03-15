@@ -4,7 +4,7 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>viewer@pdf.js</em:id>
+    <em:id>pdf.js-seamonkey@lakora.us</em:id>
     <!-- PDFJS_LOCALIZED_METADATA -->
     <em:name>PDF Viewer</em:name>
     <em:version>PDFJSSCRIPT_VERSION</em:version>
@@ -20,7 +20,7 @@
 
     <em:bootstrap>true</em:bootstrap>
     <em:multiprocessCompatible>true</em:multiprocessCompatible>
-    <em:creator>Isaac Schemm</em:creator>
+    <em:creator>Mozilla; Isaac Schemm</em:creator>
     <em:description>Uses HTML5 to display PDF files directly in SeaMonkey.</em:description>
     <em:homepageURL>https://github.com/IsaacSchemm/seamonkey-pdf.js/</em:homepageURL>
     <em:type>2</em:type>

@@ -36,15 +36,12 @@ It is also possible to view all test PDF files on the right side by opening:
 
 ## Building PDF.js
 
-In order to bundle all `src/` files into two production scripts and build the generic
-viewer, run:
-
-    $ gulp generic
-
-This will generate `pdf.js` and `pdf.worker.js` in the `build/generic/build/` directory.
-Both scripts are needed but only `pdf.js` needs to be included since `pdf.worker.js` will
-be loaded by `pdf.js`. The PDF.js files are large and should be minified for production.
-
 To build the Firefox / SeaMonkey extension, run:
 
-    $ gulp extension
+    $ gulp firefox
+
+You will want to make sure that "zip" and "git" are in your PATH. On Windows,
+this is not necessarily the case by default. You can set the PATH in the
+command prompt with a command like:
+
+    SET PATH=C:\folder1;C:\folder2;%PATH%

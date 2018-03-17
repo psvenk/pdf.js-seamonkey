@@ -319,12 +319,12 @@ describe('api', function() {
     });
   });
   describe('PDFWorker', function() {
-    if (isNodeJS()) {
-      pending('Worker is not supported in Node.js.');
-    }
-
     it('worker created or destroyed', function (done) {
-      var worker = new PDFJS.PDFWorker('test1');
+      if (isNodeJS()) {
+        pending('Worker is not supported in Node.js.');
+      }
+
+      var worker = new PDFJS.PDFWorker({ name: 'test1', });
       worker.promise.then(function () {
         expect(worker.name).toEqual('test1');
         expect(!!worker.port).toEqual(true);
@@ -341,6 +341,10 @@ describe('api', function() {
       });
     });
     it('worker created or destroyed by getDocument', function (done) {
+      if (isNodeJS()) {
+        pending('Worker is not supported in Node.js.');
+      }
+
       var loadingTask = getDocument(basicApiGetDocumentParams);
       var worker;
       loadingTask.promise.then(function () {
@@ -361,7 +365,11 @@ describe('api', function() {
       });
     });
     it('worker created and can be used in getDocument', function (done) {
-      var worker = new PDFJS.PDFWorker('test1');
+      if (isNodeJS()) {
+        pending('Worker is not supported in Node.js.');
+      }
+
+      var worker = new PDFJS.PDFWorker({ name: 'test1', });
       var loadingTask = getDocument(
         buildGetDocumentParams(basicApiFileName, {
           worker,
@@ -386,9 +394,13 @@ describe('api', function() {
       });
     });
     it('creates more than one worker', function (done) {
-      var worker1 = new PDFJS.PDFWorker('test1');
-      var worker2 = new PDFJS.PDFWorker('test2');
-      var worker3 = new PDFJS.PDFWorker('test3');
+      if (isNodeJS()) {
+        pending('Worker is not supported in Node.js.');
+      }
+
+      var worker1 = new PDFJS.PDFWorker({ name: 'test1', });
+      var worker2 = new PDFJS.PDFWorker({ name: 'test2', });
+      var worker3 = new PDFJS.PDFWorker({ name: 'test3', });
       var ready = Promise.all([worker1.promise, worker2.promise,
         worker3.promise]);
       ready.then(function () {
@@ -404,6 +416,10 @@ describe('api', function() {
       });
     });
     it('gets current workerSrc', function() {
+      if (isNodeJS()) {
+        pending('Worker is not supported in Node.js.');
+      }
+
       let workerSrc = PDFWorker.getWorkerSrc();
       expect(typeof workerSrc).toEqual('string');
       expect(workerSrc).toEqual(PDFJS.workerSrc);
@@ -1199,10 +1215,7 @@ describe('api', function() {
       ]).then(done);
     });
   });
-  describe('Multiple PDFJS instances', function() {
-    if (isNodeJS()) {
-      pending('TODO: Support Canvas testing in Node.js.');
-    }
+  describe('Multiple `getDocument` instances', function() {
     // Regression test for https://github.com/mozilla/pdf.js/issues/6205
     // A PDF using the Helvetica font.
     var pdf1 = buildGetDocumentParams('tracemonkey.pdf');
@@ -1256,6 +1269,10 @@ describe('api', function() {
     });
 
     it('should correctly render PDFs in parallel', function(done) {
+      if (isNodeJS()) {
+        pending('TODO: Support Canvas testing in Node.js.');
+      }
+
       var baseline1, baseline2, baseline3;
       var promiseDone = renderPDF(pdf1).then(function(data1) {
         baseline1 = data1;
@@ -1284,12 +1301,9 @@ describe('api', function() {
     });
   });
   describe('PDFDataRangeTransport', function () {
-    if (isNodeJS()) {
-      pending('XMLHttpRequest is not supported in Node.js.');
-    }
-    var pdfPath = new URL('../pdfs/tracemonkey.pdf', window.location).href;
     var loadPromise;
     function getDocumentData() {
+      const pdfPath = new URL('../pdfs/tracemonkey.pdf', window.location).href;
       if (loadPromise) {
         return loadPromise;
       }
@@ -1308,6 +1322,10 @@ describe('api', function() {
       return loadPromise;
     }
     it('should fetch document info and page using ranges', function (done) {
+      if (isNodeJS()) {
+        pending('XMLHttpRequest is not supported in Node.js.');
+      }
+
       var transport;
       var initialDataLength = 4000;
       var fetches = 0;
@@ -1342,6 +1360,10 @@ describe('api', function() {
     });
     it('should fetch document info and page using range and streaming',
         function (done) {
+      if (isNodeJS()) {
+        pending('XMLHttpRequest is not supported in Node.js.');
+      }
+
       var transport;
       var initialDataLength = 4000;
       var fetches = 0;

@@ -141,6 +141,10 @@ class MozL10n {
     this.mozL10n = mozL10n;
   }
 
+  getLanguage() {
+    return Promise.resolve(this.mozL10n.getLanguage());
+  }
+
   getDirection() {
     return Promise.resolve(this.mozL10n.getDirection());
   }

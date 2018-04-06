@@ -1,7 +1,7 @@
 # PDF.js
 
-This is a fork of the last known version of PDF.js with support for SeaMonkey
-2.49.x, with some additional changes cherry-picked from the main branch.
+This is a fork of PDF.js with support for SeaMonkey 2.49.x. Some additional
+changes have been cherry-picked from the main branch.
 
 For more information about pdf.js, see: https://github.com/mozilla/pdf.js
 

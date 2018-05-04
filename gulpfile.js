@@ -747,6 +747,7 @@ gulp.task('firefox-pre', ['buildnumber', 'locale'], function () {
     preprocessHTML('web/viewer.html', defines)
         .pipe(gulp.dest(FIREFOX_BUILD_CONTENT_DIR + 'web')),
     preprocessCSS('web/viewer.css', 'firefox', defines, true)
+        .pipe(postcss([autoprefixer(AUTOPREFIXER_CONFIG)]))
         .pipe(gulp.dest(FIREFOX_BUILD_CONTENT_DIR + 'web')),
 
     gulp.src(FIREFOX_CONTENT_DIR + 'PdfJs-stub.jsm')

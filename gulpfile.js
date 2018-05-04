@@ -74,14 +74,7 @@ var config = JSON.parse(fs.readFileSync(CONFIG_FILE).toString());
 // Default Autoprefixer config used for generic, components, minifed-pre
 var AUTOPREFIXER_CONFIG = {
   browsers: [
-    'last 2 versions',
-    'Chrome >= 49', // Last supported on Windows XP
-    'Firefox >= 52', // Last supported on Windows XP
-    'Firefox ESR',
-    'IE >= 11',
-    'Safari >= 8',
-    '> 0.5%',
-    'not dead',
+    'Firefox >= 52', // SeaMonkey 2.49
   ],
 };
 

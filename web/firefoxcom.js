@@ -173,7 +173,7 @@ class MozL10n {
     'findbarclose',
   ];
   const handleEvent = function({ type, detail, }) {
-    if (!PDFViewerApplication.initialized) {
+    if (!PDFViewerApplication.initialized || !PDFViewerApplication.supportsIntegratedFind) {
       return;
     }
     if (type === 'findbarclose') {

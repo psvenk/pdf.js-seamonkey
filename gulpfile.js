@@ -78,7 +78,7 @@ var AUTOPREFIXER_CONFIG = {
   browsers: [
     'last 2 versions',
     'Chrome >= 49', // Last supported on Windows XP
-    'Firefox >= 52', // Last supported on Windows XP
+    'Firefox >= 52', // Last supported on Windows XP; SeaMonkey 2.49
     'Firefox ESR',
     'IE >= 11',
     'Safari >= 9',
@@ -582,14 +582,18 @@ gulp.task('default_preferences', gulp.series('default_preferences-pre',
 
 gulp.task('locale', function () {
   var VIEWER_LOCALE_OUTPUT = 'web/locale/';
-  var METADATA_OUTPUT = 'extensions/seamonkey/';
-  var EXTENSION_LOCALE_OUTPUT = 'extensions/seamonkey/locale/';
+  var METADATA_OUTPUT = 'extensions/firefox/';
+  var EXTENSION_LOCALE_OUTPUT = 'extensions/firefox/locale/';
+  var SEAMONKEY_METADATA_OUTPUT = 'extensions/seamonkey/';
+  var SEAMONKEY_EXTENSION_LOCALE_OUTPUT = 'extensions/seamonkey/locale/';
 
   console.log();
   console.log('### Building localization files');
 
   rimraf.sync(EXTENSION_LOCALE_OUTPUT);
   mkdirp.sync(EXTENSION_LOCALE_OUTPUT);
+  rimraf.sync(SEAMONKEY_EXTENSION_LOCALE_OUTPUT);
+  mkdirp.sync(SEAMONKEY_EXTENSION_LOCALE_OUTPUT);
   rimraf.sync(VIEWER_LOCALE_OUTPUT);
   mkdirp.sync(VIEWER_LOCALE_OUTPUT);
 
@@ -611,6 +615,7 @@ gulp.task('locale', function () {
     }
 
     mkdirp.sync(EXTENSION_LOCALE_OUTPUT + '/' + locale);
+    mkdirp.sync(SEAMONKEY_EXTENSION_LOCALE_OUTPUT + '/' + locale);
     mkdirp.sync(VIEWER_LOCALE_OUTPUT + '/' + locale);
 
     locales.push(locale);
@@ -637,6 +642,14 @@ gulp.task('locale', function () {
     gulp.src(L10N_DIR + '/{' + locales.join(',') + '}' +
              '/{viewer,chrome}.properties', { base: L10N_DIR, })
       .pipe(gulp.dest(EXTENSION_LOCALE_OUTPUT)),
+
+    createStringSource('metadata.inc', metadataContent)
+      .pipe(gulp.dest(SEAMONKEY_METADATA_OUTPUT)),
+    createStringSource('chrome.manifest.inc', chromeManifestContent)
+      .pipe(gulp.dest(SEAMONKEY_METADATA_OUTPUT)),
+    gulp.src(L10N_DIR + '/{' + locales.join(',') + '}' +
+             '/{viewer,chrome}.properties', { base: L10N_DIR, })
+      .pipe(gulp.dest(SEAMONKEY_EXTENSION_LOCALE_OUTPUT)),
 
     createStringSource('locale.properties', viewerOutput)
       .pipe(gulp.dest(VIEWER_LOCALE_OUTPUT)),
@@ -860,12 +873,28 @@ gulp.task('minified-post', gulp.series('minified-pre', function (done) {
 
 gulp.task('minified', gulp.series('minified-post'));
 
+function preprocessDefaultPreferences(content) {
+  var preprocessor2 = require('./external/builder/preprocessor2.js');
+  var licenseHeader = fs.readFileSync('./src/license_header.js').toString();
+
+  var GLOBALS = '/* eslint-disable */\n';
+  var MODIFICATION_WARNING =
+    '//\n// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!\n//\n';
+
+  content = preprocessor2.preprocessPDFJSCode({
+    rootPath: __dirname,
+    defines: DEFINES,
+  }, content);
+
+  return (licenseHeader + '\n' + GLOBALS + '\n' + MODIFICATION_WARNING + '\n' +
+          content + '\n');
+}
+
 gulp.task('seamonkey-pre', ['buildnumber', 'locale'], function () {
   console.log();
   console.log('### Building SeaMonkey extension');
   var defines = builder.merge(DEFINES, { FIREFOX: true, SKIP_BABEL: true, });
 
-  var GLOBALS = '/* eslint-disable */\n';
   var FIREFOX_BUILD_CONTENT_DIR = SEAMONKEY_BUILD_DIR + '/content/',
       FIREFOX_EXTENSION_DIR = 'extensions/seamonkey/',
       FIREFOX_CONTENT_DIR = EXTENSION_SRC_DIR + '/seamonkey/content/',
@@ -1354,11 +1383,6 @@ gulp.task('gh-pages-prepare', function () {
   return merge([
     vfs.src(GENERIC_DIR + '**/*', { base: GENERIC_DIR, stripBOM: false, })
        .pipe(gulp.dest(GH_PAGES_DIR)),
-    gulp.src([SEAMONKEY_BUILD_DIR + '*.xpi',
-              SEAMONKEY_BUILD_DIR + '*.rdf'])
-        .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'seamonkey/')),
-    gulp.src(CHROME_BUILD_DIR + '*.crx')
-        .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'chromium/')),
     gulp.src('test/features/**/*', { base: 'test/', })
         .pipe(gulp.dest(GH_PAGES_DIR)),
     gulp.src(JSDOC_BUILD_DIR + '**/*', { base: JSDOC_BUILD_DIR, })

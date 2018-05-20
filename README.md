@@ -1,6 +1,8 @@
 # PDF.js [![Build Status](https://travis-ci.org/mozilla/pdf.js.svg?branch=master)](https://travis-ci.org/mozilla/pdf.js)
 
-This is a fork of PDF.js with support for SeaMonkey 2.49.x.
+This is a fork of PDF.js which works with SeaMonkey 2.49.x and Firefox 52 ESR.
+It probably won't work with later versions of SeaMonkey or Firefox, and I don't
+currently plan on supporting them in this fork.
 
 For more information about pdf.js, see: https://github.com/mozilla/pdf.js
 
@@ -26,3 +28,9 @@ If everything worked out, install all dependencies for PDF.js:
 To build the SeaMonkey extension, run:
 
     $ gulp seamonkey
+
+## Installing
+
+You can get the latest release of this fork from the
+[releases page on GitHub](https://github.com/IsaacSchemm/pdf.js-seamonkey/releases)
+or from [AMO](https://addons.mozilla.org/en-US/seamonkey/addon/pdf-js-for-seamonkey/).

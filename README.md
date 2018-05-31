@@ -6,6 +6,8 @@ currently plan on supporting them in this fork.
 
 For more information about pdf.js, see: https://github.com/mozilla/pdf.js
 
+Until pdf.js 2.0 is released, all releases posted here will be based on pre-release versions of pdf.js.
+
 ## Getting the Code
 
 To get a local copy of the current code, clone it using git:
@@ -32,5 +34,4 @@ To build the SeaMonkey extension, run:
 ## Installing
 
 You can get the latest release of this fork from the
-[releases page on GitHub](https://github.com/IsaacSchemm/pdf.js-seamonkey/releases)
-or from [AMO](https://addons.mozilla.org/en-US/seamonkey/addon/pdf-js-for-seamonkey/).
+[releases page on GitHub](https://github.com/IsaacSchemm/pdf.js-seamonkey/releases).

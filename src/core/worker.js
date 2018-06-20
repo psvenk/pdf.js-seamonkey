@@ -15,12 +15,13 @@
 
 import {
   arrayByteLength, arraysToBytes, assert, createPromiseCapability, info,
-  InvalidPDFException, MessageHandler, MissingPDFException, PasswordException,
+  InvalidPDFException, MissingPDFException, PasswordException,
   setVerbosityLevel, UnexpectedResponseException, UnknownErrorException,
   UNSUPPORTED_FEATURES, warn, XRefParseException
 } from '../shared/util';
 import { LocalPdfManager, NetworkPdfManager } from './pdf_manager';
 import isNodeJS from '../shared/is_node';
+import { MessageHandler } from '../shared/message_handler';
 import { Ref } from './primitives';
 
 var WorkerTask = (function WorkerTaskClosure() {
@@ -574,9 +575,9 @@ var WorkerMessageHandler = {
             finishWorkerTask(task);
             pdfManager.updatePassword(data.password);
             pdfManagerReady();
-          }).catch(function (ex) {
+          }).catch(function (boundException) {
             finishWorkerTask(task);
-            handler.send('PasswordException', ex);
+            handler.send('PasswordException', boundException);
           }.bind(null, e));
         } else if (e instanceof InvalidPDFException) {
           handler.send('InvalidPDF', e);

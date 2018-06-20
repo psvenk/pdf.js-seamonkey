@@ -35,8 +35,7 @@ var spawn = require('child_process').spawn;
 var spawnSync = require('child_process').spawnSync;
 var streamqueue = require('streamqueue');
 var merge = require('merge-stream');
-var zip = require('gulp-zip');
-var webpack2 = require('webpack');
+var zip = require('gulp-zip');var webpack2 = require('webpack');
 var webpackStream = require('webpack-stream');
 var Vinyl = require('vinyl');
 var vfs = require('vinyl-fs');
@@ -52,7 +51,6 @@ var GENERIC_DIR = BUILD_DIR + 'generic/';
 var COMPONENTS_DIR = BUILD_DIR + 'components/';
 var MINIFIED_DIR = BUILD_DIR + 'minified/';
 var SEAMONKEY_BUILD_DIR = BUILD_DIR + 'seamonkey/';
-var CHROME_BUILD_DIR = BUILD_DIR + 'chromium/';
 var JSDOC_BUILD_DIR = BUILD_DIR + 'jsdoc/';
 var GH_PAGES_DIR = BUILD_DIR + 'gh-pages/';
 var SRC_DIR = 'src/';
@@ -125,7 +123,7 @@ function createStringSource(filename, content) {
   source._read = function () {
     this.push(new Vinyl({
       path: filename,
-      contents: new Buffer(content),
+      contents: Buffer.from(content),
     }));
     this.push(null);
   };
@@ -147,8 +145,15 @@ function createWebpackConfig(defines, output) {
   var skipBabel = bundleDefines.SKIP_BABEL ||
                   process.env['SKIP_BABEL'] === 'true';
 
+  // Required to expose e.g., the `window` object.
+  output.globalObject = 'this';
+
   return {
+    mode: 'none',
     output: output,
+    performance: {
+      hints: false, // Disable messages about larger file sizes.
+    },
     plugins: [
       new webpack2.BannerPlugin({ banner: licenseHeaderLibre, raw: true, }),
     ],
@@ -161,10 +166,11 @@ function createWebpackConfig(defines, output) {
     },
     devtool: enableSourceMaps ? 'source-map' : undefined,
     module: {
-      loaders: [
+      rules: [
         {
           loader: 'babel-loader',
-          exclude: /src\/core\/(glyphlist|unicode)/, // babel is too slow
+          // babel is too slow
+          exclude: /src[\\\/]core[\\\/](glyphlist|unicode)/,
           options: {
             presets: skipBabel ? undefined : ['env'],
             plugins: ['transform-es2015-modules-commonjs'],
@@ -422,8 +428,6 @@ gulp.task('default', function() {
     console.log('  ' + taskName);
   });
 });
-
-gulp.task('extension', ['seamonkey', 'chromium']);
 
 gulp.task('buildnumber', function (done) {
   console.log();
@@ -1023,24 +1027,16 @@ gulp.task('lib', ['buildnumber'], function () {
   var licenseHeaderLibre =
     fs.readFileSync('./src/license_header_libre.js').toString();
   var preprocessor2 = require('./external/builder/preprocessor2.js');
-  var sharedFiles = [
-    'compatibility',
-    'global_scope',
-    'is_node',
-    'streams_polyfill',
-    'util',
-  ];
   var buildLib = merge([
     gulp.src([
-      'src/{core,display}/*.js',
-      'src/shared/{' + sharedFiles.join() + '}.js',
+      'src/{core,display,shared}/*.js',
+      '!src/shared/{cffStandardStrings,fonts_utils}.js',
       'src/{pdf,pdf.worker}.js',
     ], { base: 'src/', }),
     gulp.src([
       'examples/node/domstubs.js',
       'web/*.js',
-      '!web/pdfjs.js',
-      '!web/viewer.js',
+      '!web/{pdfjs,viewer}.js',
     ], { base: '.', }),
     gulp.src('test/unit/*.js', { base: '.', }),
   ]).pipe(transform('utf8', preprocess))
@@ -1052,7 +1048,7 @@ gulp.task('lib', ['buildnumber'], function () {
   ]);
 });
 
-gulp.task('web-pre', ['generic', 'extension', 'jsdoc']);
+gulp.task('web-pre', ['generic', 'jsdoc']);
 
 gulp.task('publish', ['generic'], function (done) {
   var version = JSON.parse(
@@ -1235,11 +1231,6 @@ gulp.task('gh-pages-prepare', ['web-pre'], function () {
   return merge([
     vfs.src(GENERIC_DIR + '**/*', { base: GENERIC_DIR, stripBOM: false, })
        .pipe(gulp.dest(GH_PAGES_DIR)),
-    gulp.src([SEAMONKEY_BUILD_DIR + '*.xpi',
-              SEAMONKEY_BUILD_DIR + '*.rdf'])
-        .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'seamonkey/')),
-    gulp.src(CHROME_BUILD_DIR + '*.crx')
-        .pipe(gulp.dest(GH_PAGES_DIR + EXTENSION_SRC_DIR + 'chromium/')),
     gulp.src('test/features/**/*', { base: 'test/', })
         .pipe(gulp.dest(GH_PAGES_DIR)),
     gulp.src(JSDOC_BUILD_DIR + '**/*', { base: JSDOC_BUILD_DIR, })
@@ -1315,10 +1306,10 @@ gulp.task('dist-pre', ['generic', 'components', 'lib', 'minified'], function() {
     license: DIST_LICENSE,
     dependencies: {
       'node-ensure': '^0.0.0', // shim for node for require.ensure
-      'worker-loader': '^1.1.1', // used in external/dist/webpack.json
+      'worker-loader': '^2.0.0', // used in external/dist/webpack.json
     },
     peerDependencies: {
-      'webpack': '^2.0.0 || ^3.0.0', // peerDependency of 'worker-loader'
+      'webpack': '^3.0.0 || ^4.0.0-alpha.0 || ^4.0.0', // from 'worker-loader'
     },
     browser: {
       'fs': false,

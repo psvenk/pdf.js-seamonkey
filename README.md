@@ -6,8 +6,6 @@ currently plan on supporting them in this fork.
 
 For more information about pdf.js, see: https://github.com/mozilla/pdf.js
 
-Until pdf.js 2.0 is released, all releases posted here will be based on pre-release versions of pdf.js.
-
 ## Getting the Code
 
 To get a local copy of the current code, clone it using git:
@@ -15,7 +13,7 @@ To get a local copy of the current code, clone it using git:
     $ git clone git://github.com/IsaacSchemm/pdf.js-seamonkey.git
     $ cd pdf.js
 
-Next, install Node.js via the [official package](http://nodejs.org) or via
+Next, install Node.js via the [official package](https://nodejs.org) or via
 [nvm](https://github.com/creationix/nvm). You need to install the gulp package
 globally (see also [gulp's getting started](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)):
 

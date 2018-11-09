@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars, no-restricted-globals */
 
 'use strict';
 
@@ -92,6 +92,8 @@ exports.InvalidPDFException = pdfjsSharedUtil.InvalidPDFException;
 exports.MissingPDFException = pdfjsSharedUtil.MissingPDFException;
 exports.SVGGraphics = pdfjsDisplaySVG.SVGGraphics;
 exports.NativeImageDecoding = pdfjsSharedUtil.NativeImageDecoding;
+exports.CMapCompressionType = pdfjsSharedUtil.CMapCompressionType;
+exports.PermissionFlag = pdfjsSharedUtil.PermissionFlag;
 exports.UnexpectedResponseException =
   pdfjsSharedUtil.UnexpectedResponseException;
 exports.OPS = pdfjsSharedUtil.OPS;
@@ -101,13 +103,15 @@ exports.createValidAbsoluteUrl = pdfjsSharedUtil.createValidAbsoluteUrl;
 exports.createObjectURL = pdfjsSharedUtil.createObjectURL;
 exports.removeNullCharacters = pdfjsSharedUtil.removeNullCharacters;
 exports.shadow = pdfjsSharedUtil.shadow;
-exports.createBlob = pdfjsSharedUtil.createBlob;
 exports.Util = pdfjsSharedUtil.Util;
+exports.ReadableStream = pdfjsSharedUtil.ReadableStream;
+exports.URL = pdfjsSharedUtil.URL;
 exports.RenderingCancelledException =
   pdfjsDisplayDOMUtils.RenderingCancelledException;
 exports.getFilenameFromUrl = pdfjsDisplayDOMUtils.getFilenameFromUrl;
 exports.LinkTarget = pdfjsDisplayDOMUtils.LinkTarget;
 exports.addLinkAttributes = pdfjsDisplayDOMUtils.addLinkAttributes;
+exports.loadScript = pdfjsDisplayDOMUtils.loadScript;
 exports.GlobalWorkerOptions = pdfjsDisplayWorkerOptions.GlobalWorkerOptions;
 exports.apiCompatibilityParams =
   pdfjsDisplayAPICompatibility.apiCompatibilityParams;

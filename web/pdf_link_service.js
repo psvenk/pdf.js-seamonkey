@@ -49,7 +49,7 @@ class PDFLinkService {
     this._pagesRefCache = null;
   }
 
-  setDocument(pdfDocument, baseUrl) {
+  setDocument(pdfDocument, baseUrl = null) {
     this.baseUrl = baseUrl;
     this.pdfDocument = pdfDocument;
     this._pagesRefCache = Object.create(null);
@@ -162,7 +162,7 @@ class PDFLinkService {
         explicitDest: dest,
       });
     }).then((data) => {
-      if (!(data.explicitDest instanceof Array)) {
+      if (!Array.isArray(data.explicitDest)) {
         console.error(`PDFLinkService.navigateTo: "${data.explicitDest}" is` +
                       ` not a valid destination array, for dest="${dest}".`);
         return;
@@ -179,7 +179,7 @@ class PDFLinkService {
     if (typeof dest === 'string') {
       return this.getAnchorUrl('#' + escape(dest));
     }
-    if (dest instanceof Array) {
+    if (Array.isArray(dest)) {
       let str = JSON.stringify(dest);
       return this.getAnchorUrl('#' + escape(str));
     }
@@ -273,7 +273,7 @@ class PDFLinkService {
       try {
         dest = JSON.parse(dest);
 
-        if (!(dest instanceof Array)) {
+        if (!Array.isArray(dest)) {
           // Avoid incorrectly rejecting a valid named destination, such as
           // e.g. "4.3" or "true", because `JSON.parse` converted its type.
           dest = dest.toString();
@@ -338,18 +338,6 @@ class PDFLinkService {
   }
 
   /**
-   * @param {Object} params
-   */
-  onFileAttachmentAnnotation({ id, filename, content, }) {
-    this.eventBus.dispatch('fileattachmentannotation', {
-      source: this,
-      id,
-      filename,
-      content,
-    });
-  }
-
-  /**
    * @param {number} pageNum - page number.
    * @param {Object} pageRef - reference to the page.
    */
@@ -368,7 +356,7 @@ class PDFLinkService {
 }
 
 function isValidExplicitDestination(dest) {
-  if (!(dest instanceof Array)) {
+  if (!Array.isArray(dest)) {
     return false;
   }
   let destLength = dest.length, allowNull = true;
@@ -420,10 +408,20 @@ function isValidExplicitDestination(dest) {
   return true;
 }
 
+/**
+ * @implements {IPDFLinkService}
+ */
 class SimpleLinkService {
   constructor() {
     this.externalLinkTarget = null;
     this.externalLinkRel = null;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get pagesCount() {
+    return 0;
   }
 
   /**
@@ -480,11 +478,6 @@ class SimpleLinkService {
    * @param {string} action
    */
   executeNamedAction(action) {}
-
-  /**
-   * @param {Object} params
-   */
-  onFileAttachmentAnnotation({ id, filename, content, }) {}
 
   /**
    * @param {number} pageNum - page number.

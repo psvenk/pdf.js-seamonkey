@@ -14,8 +14,7 @@
  */
 
 import {
-  cloneObj, getPageSizeInches, getPDFFileNameFromURL, isPortraitOrientation,
-  NullL10n
+  getPageSizeInches, getPDFFileNameFromURL, isPortraitOrientation, NullL10n
 } from './ui_utils';
 import { createPromiseCapability } from 'pdfjs-lib';
 
@@ -121,7 +120,7 @@ class PDFDocumentProperties {
         return Promise.all([
           info,
           metadata,
-          contentDispositionFilename || getPDFFileNameFromURL(this.url),
+          contentDispositionFilename || getPDFFileNameFromURL(this.url || ''),
           this._parseFileSize(this.maybeFileSize),
           this._parseDate(info.CreationDate),
           this._parseDate(info.ModDate),
@@ -129,9 +128,10 @@ class PDFDocumentProperties {
             return this._parsePageSize(getPageSizeInches(pdfPage),
                                        pagesRotation);
           }),
+          this._parseLinearization(info.IsLinearized),
         ]);
       }).then(([info, metadata, fileName, fileSize, creationDate, modDate,
-                pageSize]) => {
+                pageSize, isLinearized]) => {
         freezeFieldData({
           'fileName': fileName,
           'fileSize': fileSize,
@@ -146,6 +146,7 @@ class PDFDocumentProperties {
           'version': info.PDFFormatVersion,
           'pageCount': this.pdfDocument.numPages,
           'pageSize': pageSize,
+          'linearized': isLinearized,
           '_currentPageNumber': currentPageNumber,
           '_pagesRotation': pagesRotation,
         });
@@ -161,7 +162,7 @@ class PDFDocumentProperties {
         if (fileSize === this.fieldData['fileSize']) {
           return; // The fileSize has already been correctly set.
         }
-        let data = cloneObj(this.fieldData);
+        let data = Object.assign(Object.create(null), this.fieldData);
         data['fileSize'] = fileSize;
 
         freezeFieldData(data);
@@ -183,10 +184,10 @@ class PDFDocumentProperties {
    * Note that the overlay will contain no information if this method
    * is not called.
    *
-   * @param {Object} pdfDocument - A reference to the PDF document.
+   * @param {PDFDocumentProxy} pdfDocument - A reference to the PDF document.
    * @param {string} url - The URL of the document.
    */
-  setDocument(pdfDocument, url) {
+  setDocument(pdfDocument, url = null) {
     if (this.pdfDocument) {
       this._reset();
       this._updateUI(true);
@@ -406,6 +407,15 @@ class PDFDocumentProperties {
     return this.l10n.get('document_properties_date_string',
                          { date: dateString, time: timeString, },
                          '{{date}}, {{time}}');
+  }
+
+  /**
+   * @private
+   */
+  _parseLinearization(isLinearized) {
+    return this.l10n.get('document_properties_linearized_' +
+                         (isLinearized ? 'yes' : 'no'), null,
+                         (isLinearized ? 'Yes' : 'No'));
   }
 }
 

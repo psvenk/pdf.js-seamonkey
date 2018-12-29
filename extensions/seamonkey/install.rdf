@@ -40,7 +40,7 @@
     <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:creator>Mozilla; Isaac Schemm</em:creator>
     <em:description>Uses HTML5 to display PDF files directly in SeaMonkey.</em:description>
-    <em:homepageURL>https://github.com/IsaacSchemm/seamonkey-pdf.js/</em:homepageURL>
+    <em:homepageURL>https://github.com/IsaacSchemm/pdf.js-seamonkey/</em:homepageURL>
     <em:type>2</em:type>
   </Description>
 </RDF>

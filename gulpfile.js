@@ -890,7 +890,7 @@ function preprocessDefaultPreferences(content) {
           content + '\n');
 }
 
-gulp.task('seamonkey-pre', ['buildnumber', 'locale'], function () {
+gulp.task('seamonkey-pre', gulp.series('buildnumber', 'locale', function () {
   console.log();
   console.log('### Building SeaMonkey extension');
   var defines = builder.merge(DEFINES, { FIREFOX: true, SKIP_BABEL: true, });
@@ -966,9 +966,9 @@ gulp.task('seamonkey-pre', ['buildnumber', 'locale'], function () {
     preprocessJS(FIREFOX_EXTENSION_DIR + 'bootstrap.js', defines, true)
         .pipe(gulp.dest(SEAMONKEY_BUILD_DIR)),
   ]);
-});
+}));
 
-gulp.task('seamonkey', ['seamonkey-pre'], function (done) {
+gulp.task('seamonkey', gulp.series('seamonkey-pre', function (done) {
   var FIREFOX_EXTENSION_FILES =
         ['bootstrap.js',
          'install.rdf',
@@ -996,7 +996,7 @@ gulp.task('seamonkey', ['seamonkey-pre'], function (done) {
     console.log('extension created: ' + FIREFOX_EXTENSION_NAME);
     done();
   });
-});
+}));
 
 gulp.task('mozcentral-pre', gulp.series('buildnumber', 'default_preferences',
                                         'locale', function() {

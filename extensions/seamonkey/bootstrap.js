@@ -32,7 +32,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 function initializeDefaultPreferences() {
   /* eslint-disable semi */
   var DEFAULT_PREFERENCES =
-//#include ../../web/default_preferences.json
+//#include ../../build/default_preferences.json
 //#if false
     "end of DEFAULT_PREFERENCES"
 //#endif

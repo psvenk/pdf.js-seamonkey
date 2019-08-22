@@ -890,7 +890,7 @@ function preprocessDefaultPreferences(content) {
           content + '\n');
 }
 
-gulp.task('seamonkey-pre', gulp.series('buildnumber', 'locale', function () {
+gulp.task('seamonkey-pre', gulp.series('buildnumber', 'default_preferences', 'locale', function () {
   console.log();
   console.log('### Building SeaMonkey extension');
   var defines = builder.merge(DEFINES, { FIREFOX: true, SKIP_BABEL: true, });

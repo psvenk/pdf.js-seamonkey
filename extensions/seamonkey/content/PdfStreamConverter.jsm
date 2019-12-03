@@ -60,7 +60,7 @@ function getContainingBrowser(domWindow) {
 }
 
 function getFindBar(domWindow) {
-  if (PdfjsContentUtils.isRemote) {
+  if (Services.appinfo.processType === Services.appinfo.PROCESS_TYPE_CONTENT) {
     throw new Error("FindBar is not accessible from the content process.");
   }
   try {
@@ -358,7 +358,7 @@ class ChromeActions {
     }
 
     // ... and we are in a child process
-    if (PdfjsContentUtils.isRemote) {
+    if (Services.appinfo.processType === Services.appinfo.PROCESS_TYPE_CONTENT) {
       return true;
     }
 

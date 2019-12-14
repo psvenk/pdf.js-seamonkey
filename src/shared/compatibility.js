@@ -15,11 +15,9 @@
 
 const globalScope = require('./global_scope');
 
-// Skip compatibility checks for the extensions and if we already ran
+// Skip compatibility checks if we already ran
 // this module.
-if ((typeof PDFJSDev === 'undefined' ||
-     !PDFJSDev.test('FIREFOX || MOZCENTRAL')) &&
-    !globalScope._pdfjsCompatibilityChecked) {
+if (!globalScope._pdfjsCompatibilityChecked) {
 
 globalScope._pdfjsCompatibilityChecked = true;
 

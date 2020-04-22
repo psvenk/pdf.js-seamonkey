@@ -1,4 +1,4 @@
-# PDF.js [![Build Status](https://travis-ci.org/mozilla/pdf.js.svg?branch=master)](https://travis-ci.org/mozilla/pdf.js)
+# PDF.js
 
 This is a fork of PDF.js which works with SeaMonkey 2.49.x and Firefox 52 ESR. It may also work in Pale Moon.
 
@@ -7,8 +7,6 @@ Known issues:
 * In SeaMonkey 2.53+, the PDF may fail to load until you press the Stop button in the browser.
 
 For more information about pdf.js, see: https://github.com/mozilla/pdf.js
-
-Until pdf.js 2.0 is released, all releases posted here will be based on pre-release versions of pdf.js.
 
 ## Getting the Code
 
